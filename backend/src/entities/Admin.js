@@ -1,20 +1,8 @@
-import { EntitySchema } from "typeorm";
+import mongoose from "mongoose";
 
-export default new EntitySchema({
-  name: "Admin",
-  tableName: "admins",
-  columns: {
-    id: {
-      type: "int",
-      primary: true,
-      generated: true,
-    },
-    username: {
-      type: "varchar",
-      unique: true,
-    },
-    passwordHash: {
-      type: "varchar",
-    },
-  },
+const adminSchema = new mongoose.Schema({
+  username: { type: String, required: true, unique: true },
+  passwordHash: { type: String, required: true },
 });
+
+export const Admin = mongoose.model("Admin", adminSchema);

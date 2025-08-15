@@ -1,29 +1,12 @@
-import { EntitySchema } from "typeorm";
+import mongoose from "mongoose";
 
-export const Post = new EntitySchema({
-  name: "Post",
-  tableName: "posts",
-  columns: {
-    id: {
-      type: "int",
-      primary: true,
-      generated: true,
-    },
-    title: {
-      type: "varchar",
-      nullable: false,
-    },
-    content: {
-      type: "text",
-      nullable: false,
-    },
-    image: {
-      type: "varchar",
-      nullable: true,
-    },
-    createdAt: {
-      type: "timestamp",
-      default: () => "CURRENT_TIMESTAMP",
-    },
+const postSchema = new mongoose.Schema(
+  {
+    title: { type: String, required: true },
+    content: { type: String, required: true },
+    image: { type: String, default: null },
   },
-});
+  { timestamps: true } 
+);
+
+export const Post = mongoose.model("Post", postSchema);

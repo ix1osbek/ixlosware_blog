@@ -1,127 +1,85 @@
-import { AppDataSource } from "../config/dataSource.js";
+import { Post } from "../entities/Post.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { supabase } from "../config/supabaseClient.js";
-import { Post } from "../entities/Post.js";
 import { v4 as uuidv4 } from "uuid";
 
-// ✅ CREATE
+// CREATE
 export const createPost = asyncHandler(async (req, res) => {
-    const { title, content } = req.body;
-    if (!title || !content) {
-        res.status(400);
-        throw new Error("Title va content talab qilinadi");
-    }
+  const { title, content } = req.body;
+  if (!title || !content) throw new Error("Title va content talab qilinadi");
 
-    let imageUrl = null;
-    if (req.file) {
-        const fileExt = req.file.originalname.split(".").pop();
-        const fileName = `${uuidv4()}.${fileExt}`;
+  let imageUrl = null;
+  if (req.file) {
+    const fileExt = req.file.originalname.split(".").pop();
+    const fileName = `${uuidv4()}.${fileExt}`;
 
-        const { error } = await supabase.storage
-            .from("images")
-            .upload(fileName, req.file.buffer, {
-                contentType: req.file.mimetype,
-                upsert: true,
-            });
+    const { error } = await supabase.storage.from("images").upload(fileName, req.file.buffer, {
+      contentType: req.file.mimetype,
+      upsert: true,
+    });
+    if (error) throw new Error("Rasm yuklashda xatolik: " + error.message);
 
-        if (error) {
-            res.status(500);
-            throw new Error("Rasm yuklashda xatolik: " + error.message);
-        }
+    imageUrl = supabase.storage.from("images").getPublicUrl(fileName).data.publicUrl;
+  }
 
-        imageUrl = supabase.storage.from("images").getPublicUrl(fileName).data.publicUrl;
-    }
-
-    const repo = AppDataSource.getRepository(Post);
-    const newPost = repo.create({ title, content, image: imageUrl });
-    await repo.save(newPost);
-
-    res.status(201).json({ success: true, data: newPost });
+  const newPost = await Post.create({ title, content, image: imageUrl });
+  res.status(201).json({ success: true, data: newPost });
 });
 
-// ✅ READ ALL + SEARCH
+// READ ALL + SEARCH
 export const getPosts = asyncHandler(async (req, res) => {
-    const search = req.query.search || "";
-    const repo = AppDataSource.getRepository(Post);
+  const search = req.query.search || "";
+  const query = search
+    ? { $or: [{ title: { $regex: search, $options: "i" } }, { content: { $regex: search, $options: "i" } }] }
+    : {};
 
-    let query = repo
-        .createQueryBuilder("post")
-        .orderBy("post.createdAt", "DESC");
-
-    if (search) {
-        query = query.where(
-            "post.title ILIKE :search OR post.content ILIKE :search",
-            { search: `%${search}%` }
-        );
-    }
-
-    const posts = await query.getMany();
-    res.json({ success: true, data: posts });
+  const posts = await Post.find(query).sort({ createdAt: -1 });
+  res.json({ success: true, data: posts });
 });
 
-// ✅ READ ONE BY ID
+// READ ONE
 export const getPostById = asyncHandler(async (req, res) => {
-    const { id } = req.params;
-    const repo = AppDataSource.getRepository(Post);
-
-    const post = await repo.findOne({ where: { id } });
-    if (!post) {
-        res.status(404);
-        throw new Error("Post topilmadi");
-    }
-
-    res.json({ success: true, data: post });
+  const { id } = req.params;
+  const post = await Post.findById(id);
+  if (!post) return res.status(404).json({ message: "Post topilmadi" });
+  res.json({ success: true, data: post });
 });
 
-// ✅ UPDATE
+// UPDATE
 export const updatePost = asyncHandler(async (req, res) => {
-    const { id } = req.params;
-    const { title, content } = req.body;
+  const { id } = req.params;
+  const { title, content } = req.body;
 
-    const repo = AppDataSource.getRepository(Post);
-    const post = await repo.findOne({ where: { id } });
-    if (!post) {
-        res.status(404);
-        throw new Error("Post topilmadi");
-    }
+  const post = await Post.findById(id);
+  if (!post) return res.status(404).json({ message: "Post topilmadi" });
 
-    if (req.file) {
-        const fileExt = req.file.originalname.split(".").pop();
-        const fileName = `${uuidv4()}.${fileExt}`;
+  if (req.file) {
+    const fileExt = req.file.originalname.split(".").pop();
+    const fileName = `${uuidv4()}.${fileExt}`;
 
-        const { error } = await supabase.storage
-            .from("images")
-            .upload(fileName, req.file.buffer, {
-                contentType: req.file.mimetype,
-                upsert: true,
-            });
+    const { error } = await supabase.storage.from("images").upload(fileName, req.file.buffer, {
+      contentType: req.file.mimetype,
+      upsert: true,
+    });
+    if (error) throw new Error("Rasm yuklashda xatolik: " + error.message);
 
-        if (error) {
-            res.status(500);
-            throw new Error("Rasm yuklashda xatolik: " + error.message);
-        }
+    post.image = supabase.storage.from("images").getPublicUrl(fileName).data.publicUrl;
+  }
 
-        post.image = supabase.storage.from("images").getPublicUrl(fileName).data.publicUrl;
-    }
+  post.title = title || post.title;
+  post.content = content || post.content;
 
-    post.title = title || post.title;
-    post.content = content || post.content;
-
-    await repo.save(post);
-    res.json({ success: true, data: post });
+  await post.save();
+  res.json({ success: true, data: post });
 });
 
-// ✅ DELETE
+// DELETE
 export const deletePost = asyncHandler(async (req, res) => {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    const repo = AppDataSource.getRepository(Post);
-    const post = await repo.findOne({ where: { id } });
-    if (!post) {
-        res.status(404);
-        throw new Error("Post topilmadi");
-    }
+  const post = await Post.findById(id);
+  if (!post) return res.status(404).json({ message: "Post topilmadi" });
 
-    await repo.remove(post);
-    res.json({ success: true, message: "Post o'chirildi" });
+  await post.remove();
+  res.json({ success: true, message: "Post o'chirildi" });
 });

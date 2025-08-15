@@ -1,19 +1,18 @@
-import "reflect-metadata";
-import { DataSource } from "typeorm";
+import mongoose from "mongoose";
 import dotenv from "dotenv";
-import Admin from "../entities/Admin.js";
-import {Post} from "../entities/Post.js";
+import logger from "./logger.js";
 
 dotenv.config();
 
-export const AppDataSource = new DataSource({
-    type: "postgres",
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    username: process.env.DB_USERNAME,
-    password: String(process.env.DB_PASSWORD),
-    database: process.env.DB_NAME,
-    synchronize: true, // dev uchun
-    logging: false,
-    entities: [Post, Admin],
-});
+export const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    logger.info("✅ MongoDB Atlas ulandi");
+  } catch (err) {
+    logger.error("❌ MongoDB ulanish xatosi: " + err.message);
+    process.exit(1);
+  }
+};
