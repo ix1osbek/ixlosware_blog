@@ -6,7 +6,7 @@ export const uploadImage = async (file) => {
   const fileName = `${uuidv4()}.${fileExt}`;
 
   const { data, error } = await supabase.storage
-    .from("images") // Supabase'dagi bucket nomi
+    .from("images") 
     .upload(fileName, file.buffer, {
       contentType: file.mimetype,
       upsert: false,

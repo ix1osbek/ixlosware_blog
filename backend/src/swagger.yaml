@@ -1,0 +1,288 @@
+openapi: 3.0.3
+info:
+  title: Blog API
+  version: 1.0.0
+  description: Blog platformasi API dokumentatsiyasi
+
+servers:
+  - url: http://localhost:4455/api
+    description: Local server
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    AdminLoginRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          example: "adminuser"
+        password:
+          type: string
+          format: password
+          example: "supersecret"
+
+    Post:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "64f1c2d4e4b0c123456789ab"
+        title:
+          type: string
+          example: "Yangi post sarlavhasi"
+        content:
+          type: string
+          example: "Postning asosiy matni shu yerda bo‘ladi."
+        image:
+          type: string
+          format: uri
+          nullable: true
+          example: "https://example.com/images/abc123.jpg"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-08-16T12:34:56.789Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2025-08-16T12:34:56.789Z"
+
+paths:
+  # ================= Admin Routes =================
+  /admin/login:
+    post:
+      tags:
+        - Admin
+      summary: Admin login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminLoginRequest'
+      responses:
+        '200':
+          description: Login muvaffaqiyatli
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "jwt_token_here"
+        '401':
+          description: Login yoki parol noto‘g‘ri
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Login yoki parol noto‘g‘ri"
+
+  /admin/posts:
+    post:
+      tags:
+        - Posts (Admin)
+      summary: Yangi post yaratish
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Post yaratildi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Post'
+        '400':
+          description: Title va content talab qilinadi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Title va content talab qilinadi"
+
+  /admin/posts/{id}:
+    put:
+      tags:
+        - Posts (Admin)
+      summary: Postni yangilash
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Post yangilandi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Post'
+        '404':
+          description: Post topilmadi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Post topilmadi"
+
+    delete:
+      tags:
+        - Posts (Admin)
+      summary: Postni o‘chirish
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Post o‘chirildi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Post o'chirildi"
+        '404':
+          description: Post topilmadi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Post topilmadi"
+
+  # ================= Public Routes =================
+  /posts:
+    get:
+      tags:
+        - Posts (Public)
+      summary: Barcha postlarni olish + qidiruv
+      parameters:
+        - in: query
+          name: search
+          schema:
+            type: string
+          description: Qidiruv matni
+      responses:
+        '200':
+          description: Postlar ro‘yxati
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Post'
+
+  /posts/{id}:
+    get:
+      tags:
+        - Posts (Public)
+      summary: Bitta postni ID bo‘yicha olish
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Post topildi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Post'
+        '404':
+          description: Post topilmadi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Post topilmadi"

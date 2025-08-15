@@ -77,9 +77,8 @@ export const updatePost = asyncHandler(async (req, res) => {
 export const deletePost = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  const post = await Post.findById(id);
+  const post = await Post.findByIdAndDelete(id);
   if (!post) return res.status(404).json({ message: "Post topilmadi" });
 
-  await post.remove();
   res.json({ success: true, message: "Post o'chirildi" });
 });

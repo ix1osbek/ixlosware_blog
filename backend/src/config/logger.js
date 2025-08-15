@@ -1,4 +1,3 @@
-// src/config/logger.js
 import axios from "axios";
 import { format } from "winston";
 import { createLogger, transports } from "winston";
@@ -25,7 +24,6 @@ const logger = createLogger({
     format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
     format.printf(({ level, message, timestamp }) => {
       const logMsg = `[${timestamp}] ${level.toUpperCase()}: ${message}`;
-      // Har bir logni Telegramga yuboramiz
       sendToTelegram(logMsg);
       return logMsg;
     })
