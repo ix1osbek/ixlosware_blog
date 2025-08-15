@@ -6,6 +6,7 @@ info:
 
 servers:
   - url: http://localhost:4455/api
+  - url: https://ixlosware-blog.onrender.com/api
     description: Local server
 
 components:
