@@ -29,7 +29,7 @@ const SinglePost = () => {
 	}, [id])
 
 	const handleBuyMeACoffee = () => {
-		window.open('https://buymeacoffee.com/yourusername', '_blank')
+		window.open('https://tirikchilik.uz/ixlosbek_erkinov', '_blank')
 	}
 
 	const handleShare = () => {
