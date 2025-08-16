@@ -51,13 +51,13 @@ const SinglePost = () => {
 	if (loading)
 		return (
 			<div className='flex justify-center items-center py-20'>
-				<div className='animate-spin rounded-full h-12 w-12 border-b-2 border-gray-700'></div>
+				<div className='animate-spin rounded-full h-12 w-12 border-b-2 border-gray-500'></div>
 			</div>
 		)
 
 	if (error)
 		return (
-			<div className='text-center py-20'>
+			<div className='text-center py-20 text-gray-200'>
 				<p className='text-red-600 text-lg mb-4'>{error}</p>
 				<Link to='/'>
 					<Button variant='primary'>Back to Posts</Button>
@@ -67,8 +67,8 @@ const SinglePost = () => {
 
 	if (!post)
 		return (
-			<div className='text-center py-20'>
-				<p className='text-gray-500 text-lg mb-4'>Post topilmadi.</p>
+			<div className='text-center py-20 text-gray-200'>
+				<p className='text-gray-400 text-lg mb-4'>Post topilmadi.</p>
 				<Link to='/'>
 					<Button variant='primary'>Back to Posts</Button>
 				</Link>
@@ -76,66 +76,69 @@ const SinglePost = () => {
 		)
 
 	return (
-		<div className='max-w-4xl mx-auto px-4 pt-24 pb-24'>
-			<Link to='/'>
-				<Button variant='ghost' className='mb-6'>
-					← Back to Posts
-				</Button>
-			</Link>
+		<div className='min-h-screen bg-[#000] dark:bg-[#000] '>
+			<div className='max-w-4xl mx-auto px-4 pt-24 pb-24 '>
+				<Link to='/'>
+					<Button variant='ghost' className='mb-6'>
+						← Back to Posts
+					</Button>
+				</Link>
 
-			<article className='bg-white rounded-2xl shadow-xl overflow-hidden'>
-				{post.image && (
-					<div className='w-full h-64 md:h-96 overflow-hidden'>
-						<img
-							src={post.image}
-							alt={post.title}
-							className='w-full h-full object-cover transition-transform duration-500 hover:scale-105'
+				<article className='bg-[#000] dark:bg-[#000] rounded-2xl shadow-md overflow-hidden border border-cyan-500'>
+					{post.image && (
+						<div className='w-full h-64 md:h-96 overflow-hidden p-3 '>
+							<img
+								src={post.image}
+								alt={post.title}
+								className='w-full h-full object-cover rounded-xl transition-transform duration-500 hover:scale-105'
+							/>
+						</div>
+					)}
+
+					<div className='p-6 md:p-10'>
+						<h1 className='text-3xl md:text-4xl font-extrabold text-gray-100 mb-4'>
+							{post.title}
+						</h1>
+
+						<div
+							className='post-content text-gray-300 leading-relaxed'
+							dangerouslySetInnerHTML={{ __html: post.content }}
 						/>
-					</div>
-				)}
 
-				<div className='p-6 md:p-10'>
-					<h1 className='text-3xl md:text-4xl font-extrabold text-black mb-4'>
-						{post.title}
-					</h1>
-
-					{/* Linklar ko‘k bo‘lib chiqadi */}
-					<div
-						className='post-content text-gray-700 leading-relaxed'
-						dangerouslySetInnerHTML={{ __html: post.content }}
-					/>
-
-					<div className='flex justify-center gap-4 mt-12 pt-8 border-t border-gray-200 items-center relative'>
-						<Button
-							onClick={handleBuyMeACoffee}
-							className='flex items-center gap-2 bg-gradient-to-r from-[#6f4e37] via-[#a67c52] to-[#d2b48c] text-white font-semibold 
-								px-3 py-2 rounded-full shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all
-								text-sm sm:text-base'
-							size='lg'
-						>
-							<Coffee className='w-4 h-4 sm:w-5 sm:h-5' />
-							<span className='truncate'>Buy Me a Coffee</span>
-						</Button>
-
-						<div className='relative flex items-center'>
-							<Button onClick={handleShare} variant='outline' size='md'>
-								<Share2 /> Copy Post Link
+						<div className='flex flex-col sm:flex-row justify-center gap-2 mt-12 pt-8 border-t border-gray-700 items-center'>
+							<Button
+								onClick={handleBuyMeACoffee}
+								variant='primary'
+								size='md'
+								className='flex-1 flex justify-center items-center gap-2 whitespace-normal sm:whitespace-nowrap'
+							>
+								<Coffee className='w-5 h-5' /> Buy Me a Coffee
 							</Button>
+
+							<Button
+								onClick={handleShare}
+								variant='outline'
+								size='md'
+								className='flex-1 flex justify-center items-center gap-2 whitespace-normal sm:whitespace-nowrap'
+							>
+								<Share2 className='w-5 h-5' /> Copy Post Link
+							</Button>
+
 							{copied && (
 								<span className='absolute -right-16 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded'>
 									Copied!
 								</span>
 							)}
 						</div>
-					</div>
 
-					{post.createdAt && (
-						<p className='text-gray-500 text-sm mt-4 text-right'>
-							{formatDate(post.createdAt)}
-						</p>
-					)}
-				</div>
-			</article>
+						{post.createdAt && (
+							<p className='text-gray-200 text-sm mt-4 text-right'>
+								{formatDate(post.createdAt)}
+							</p>
+						)}
+					</div>
+				</article>
+			</div>
 		</div>
 	)
 }

@@ -32,30 +32,30 @@ const PostCard = ({ post }) => {
 		: ''
 
 	return (
-		<article className='bg-white rounded-2xl shadow-md overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-lg flex flex-col h-full'>
+		<article className='bg-[#000] dark:bg-[#000] rounded-2xl shadow-md overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-xl flex flex-col h-full border border-cyan-400'>
 			{/* Rasm */}
-			<div className='relative overflow-hidden aspect-video'>
+			<div className='relative overflow-hidden aspect-video p-3'>
 				<img
 					src={
 						post.image || 'https://via.placeholder.com/400x225?text=No+Image'
 					}
 					alt={post.title}
-					className='w-full h-full object-cover transition-transform duration-500 hover:scale-110'
+					className='w-full h-full object-cover transition-transform duration-500 hover:scale-110  rounded-xl'
 				/>
-				<div className='absolute inset-0 bg-gradient-to-t from-black/30 to-transparent'></div>
+				<div className='absolute inset-0 bg-gradient-to-t from-black/50 to-transparent'></div>
 			</div>
 
 			{/* Kontent */}
 			<div className='p-5 flex flex-col flex-grow'>
 				<div className='flex justify-between items-start mb-3'>
-					<h2 className='text-xl md:text-2xl font-bold text-gray-900 line-clamp-2'>
+					<h2 className='text-xl md:text-2xl font-bold dark:text-white line-clamp-2'>
 						{post.title}
 					</h2>
-					<p className='text-gray-500 text-sm md:text-base'>{formattedDate}</p>
+					<p className='text-gray-200 text-sm md:text-base'>{formattedDate}</p>
 				</div>
 
 				{/* Qirqilgan kontent */}
-				<p className='text-gray-700 text-sm md:text-base mb-4'>
+				<p className='text-gray-200 text-sm md:text-base mb-4'>
 					{truncateContent(post.content, 50)}
 				</p>
 
@@ -66,18 +66,23 @@ const PostCard = ({ post }) => {
 						to={`/post/${post._id}`}
 						variant='primary'
 						size='md'
-						className='px-5 py-2 text-sm md:text-base flex items-center'
+						className='flex-1 flex justify-center items-center gap-2'
 					>
-						Read More <ArrowRight className='ml-2 w-4 h-4' />
+						Read More <ArrowRight className='w-4 h-4' />
 					</Button>
 
-					<div className='relative flex items-center'>
-						<Button onClick={handleShare} variant='outline' size='md'>
-							<Share2 /> Copy Post Link
+					<div className='relative flex-1'>
+						<Button
+							onClick={handleShare}
+							variant='primary'
+							size='md'
+							className='flex w-full justify-center items-center gap-2'
+						>
+							<Share2 className='w-4 h-4' /> Copy Link
 						</Button>
 						{copied && (
 							<span className='absolute -right-16 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded'>
-								Copied!
+								Copied Post Link
 							</span>
 						)}
 					</div>
