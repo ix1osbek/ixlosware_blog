@@ -2,12 +2,11 @@ import axios from 'axios'
 
 const API_BASE_URL = 'https://ixlosware-blog.onrender.com/api'
 
-// axios instance
+
 const api = axios.create({
 	baseURL: API_BASE_URL,
 })
 
-// 📝 Posts API
 export const postsAPI = {
 	getAllPosts: async () => {
 		const response = await api.get('/posts')
