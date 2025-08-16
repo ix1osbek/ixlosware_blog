@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* Custom styles for rich text editor */
+.ql-editor {
+	min-height: 200px;
+	font-size: 16px;
+	line-height: 1.6;
+}
+
+.ql-editor h1 {
+	font-size: 2rem;
+	font-weight: 700;
+	margin-bottom: 1rem;
+}
+
+.ql-editor h2 {
+	font-size: 1.5rem;
+	font-weight: 600;
+	margin-bottom: 0.75rem;
+}
+
+.ql-editor h3 {
+	font-size: 1.25rem;
+	font-weight: 600;
+	margin-bottom: 0.5rem;
+}
+
+.ql-editor p {
+	margin-bottom: 1rem;
+}
+
+.ql-editor strong {
+	font-weight: 700;
+}
+
+.ql-editor em {
+	font-style: italic;
+}
+
+.ql-editor s {
+	text-decoration: line-through;
+}
+
+.rich-text-editor a,
+.post-content a {
+	color: #2563eb; /* Tailwind text-blue-600 */
+	text-decoration: underline;
+}
+
+.rich-text-editor a:hover,
+.post-content a:hover {
+	color: #1e40af; /* Tailwind text-blue-800 */
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+	width: 6px;
+}
+
+::-webkit-scrollbar-track {
+	background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+	background: #cbd5e1;
+	border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: #94a3b8;
+}
