@@ -7,7 +7,7 @@ import { postsAPI } from '../services/api'
 
 const Admin = () => {
 	const [posts, setPosts] = useState([])
-	const [searchTerm, setSearchTerm] = useState('') // 🔍 qidiruv uchun state
+	const [searchTerm, setSearchTerm] = useState('') 
 	const [title, setTitle] = useState('')
 	const [content, setContent] = useState('')
 	const [imageFile, setImageFile] = useState(null)
