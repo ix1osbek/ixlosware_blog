@@ -109,7 +109,7 @@ const Home = () => {
 						</h3>
 						<p className='text-gray-400 mb-6 max-w-md mx-auto'>
 							Agar siz ushbu blogni yoqtirsangiz va uni qo‘llab-quvvatlamoqchi
-							bo‘lsangiz, Buy Me a Coffee orqali yordam bera olasiz.
+							bo‘lsangiz, donat qilish orqali yordam bera olasiz!
 						</p>
 						<div className='max-w-xs mx-auto'>
 							{' '}

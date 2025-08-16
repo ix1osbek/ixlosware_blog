@@ -112,7 +112,7 @@ const SinglePost = () => {
 								size='md'
 								className='flex-1 flex justify-center items-center gap-2 whitespace-normal sm:whitespace-nowrap'
 							>
-								<Coffee className='w-5 h-5' /> Buy Me a Coffee
+								<Coffee className='w-5 h-5' /> Buy me a coffee
 							</Button>
 
 							<Button
